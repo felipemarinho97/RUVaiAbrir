@@ -10,7 +10,7 @@
 
 	<name>RUVaiAbrir</name>
 	<description> O Ru vai abrir? é um aplicativo web que permite que os estudantes consultem informações relevantes sobre o funcionamento do Restaurante Universitário da UFCG.</description>
-
+ 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
@@ -21,7 +21,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<java.version>10</java.version>
+		<java.version>9</java.version> 
 	</properties>
 
 	<dependencies>
@@ -60,6 +60,13 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		
+		<!-- Java EE -->
+		<dependency>
+	        <groupId>javax.xml.bind</groupId>
+	        <artifactId>jaxb-api</artifactId>
+	    </dependency>
+	        
 	</dependencies>
 
 	<build>
