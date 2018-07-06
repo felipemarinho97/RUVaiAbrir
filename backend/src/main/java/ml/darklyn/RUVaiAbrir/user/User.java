@@ -18,6 +18,8 @@ import javax.validation.constraints.NotBlank;
 
 import org.hibernate.annotations.NaturalId;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import ml.darklyn.RUVaiAbrir.user.roles.Role;
 
 @Entity
@@ -44,9 +46,11 @@ public class User {
 	@NotBlank
     private String username;
     
+    @JsonIgnore
 	@NotBlank
     private String password;
     
+    @JsonIgnore
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "tb_user_roles",
 	        joinColumns = @JoinColumn(name = "user_id"),
