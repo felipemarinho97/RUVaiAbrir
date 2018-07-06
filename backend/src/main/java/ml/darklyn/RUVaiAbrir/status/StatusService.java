@@ -2,12 +2,11 @@ package ml.darklyn.RUVaiAbrir.status;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import ml.darklyn.RUVaiAbrir.dto.StatusDTO;
@@ -55,33 +54,41 @@ public class StatusService {
 		
 		return status;
 	}
+	
+	public Page<UserStatus> getAllCurrentUserStatus(Pageable pageable) {
+		LocalDate date = timeService.getCurrentDate();
+		MealType mealType = timeService.getCurrentMealType();
+
+		Page<UserStatus> userStatusPage = userStatusRepository.findByDateAndMealType(date, mealType, pageable)
+				.orElseThrow(() -> new NotFoundException("Não foi defindo nenhum status por usuários para o restaurante."));
+
+		return userStatusPage;
+	}
 
 	public Status getCurrentUserStatus() {
 		LocalDate date = timeService.getCurrentDate();
 		MealType mealType = timeService.getCurrentMealType();
-		Status averageStatus = new Status(date, RestaurantStatus.CLOSED, mealType);
+		var averageStatus = new Status(date, RestaurantStatus.CLOSED, mealType);
 		
 		List<UserStatus> userStatusList = userStatusRepository.findByDateAndMealType(date, mealType)
 				.orElseThrow(() -> new NotFoundException("Não foi defindo nenhum status por usuários para o restaurante."));
 		
-		Integer closedQtd = 0;
-		Integer openedQtd = 0;
+		final AtomicInteger closedQtd = new AtomicInteger(0);
+		final AtomicInteger openedQtd = new AtomicInteger(0);
 		
 		userStatusList.stream().forEach((status) -> {
-			Integer c = closedQtd;
-			Integer o = openedQtd;
 
 			switch (status.getRestaurantStatus()) {
 				case CLOSED:
-					c++;
+					closedQtd.incrementAndGet();
 					break;
 				case OPENED:
-					o++;
+					openedQtd.incrementAndGet();
 					break;
 				}
 		});
 		
-		if (closedQtd >= openedQtd) {
+		if (closedQtd.get() >= openedQtd.get()) {
 			averageStatus.setRestaurantStatus(RestaurantStatus.CLOSED);			
 		} else {
 			averageStatus.setRestaurantStatus(RestaurantStatus.OPENED);			
