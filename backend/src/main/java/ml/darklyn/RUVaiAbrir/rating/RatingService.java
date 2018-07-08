@@ -83,4 +83,9 @@ public class RatingService {
 		}
 	}
 
+	public Rating getRating(User user, LocalDate date, MealType mealType) {
+		return ratingRepository.findByUserAndDateAndMealType(user, date, mealType)
+				.orElseThrow(() -> new NotFoundException("Não foi encontrado nenhuma classificação para o Usuário especificado."));
+	}
+
 }

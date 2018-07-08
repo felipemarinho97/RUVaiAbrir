@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import ml.darklyn.RUVaiAbrir.enumeration.MealType;
 import ml.darklyn.RUVaiAbrir.menu.DinnerMenu;
+import ml.darklyn.RUVaiAbrir.user.User;
 
 @Repository
 public interface RatingRepository extends CrudRepository<Rating, Long> {
@@ -18,6 +19,8 @@ public interface RatingRepository extends CrudRepository<Rating, Long> {
 			+ "FROM Rating tb_rating "
 			+ "WHERE mealType = ?2 AND date = ?1 ")
 	Integer getAverageRatingByDateAndMealType(LocalDate date, MealType mealType);
+	
+	Optional<Rating> findByUserAndDateAndMealType(User user, LocalDate date, MealType mealType);
 
 
 }
