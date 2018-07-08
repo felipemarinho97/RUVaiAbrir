@@ -5,10 +5,12 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.hibernate.annotations.Cache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -33,7 +35,8 @@ public class CommentService {
 	
 	@Autowired
 	private Util util;
-
+	
+	@Cacheable("comments")
 	public Page<Comment> getComments(LocalDate date, MealType mealType, Pageable pageable) {
 		Page<Comment> comments = commentRepository.findByDateAndMealType(date, mealType, pageable)
 				.orElseThrow(() -> new NoContentException("Não existe nenhum comentário para hoje."));
@@ -72,7 +75,10 @@ public class CommentService {
 				.orElseThrow(() -> new NotFoundException("Não foi encontrado nenhum comentário com o ID especificado."));
 	}
 	
-	@CacheEvict(value = "comment", key = "#id")
+	@Caching(evict = {
+		@CacheEvict(value = "comment", key = "#id"),
+		@CacheEvict(value = "comments", allEntries = true)
+	})
 	public void deleteComment(Long id, Long userId) {
 		Comment comment = getComment(id);
 		
@@ -81,7 +87,11 @@ public class CommentService {
 		commentRepository.deleteById(userId);
 	}
 	
-	@CachePut(value = "comment", key = "#id")
+	@Caching(evict = {
+		@CacheEvict(value = "comments", allEntries = true)	
+	}, put = {
+		@CachePut(value = "comment", key = "#id")			
+	})
 	public Comment updateComment(Long id, CommentDTO commentDTO, Long userId) {
 		Comment comment = getComment(id);
 		
