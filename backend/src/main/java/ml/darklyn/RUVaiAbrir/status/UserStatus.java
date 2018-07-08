@@ -1,5 +1,6 @@
 package ml.darklyn.RUVaiAbrir.status;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 import javax.persistence.Entity;
@@ -22,7 +23,7 @@ import ml.darklyn.RUVaiAbrir.user.User;
 @Table(name="tb_user_status", uniqueConstraints={
 	    @UniqueConstraint(columnNames = {"date", "mealType", "user_id"})
 	})
-public class UserStatus {
+public class UserStatus implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

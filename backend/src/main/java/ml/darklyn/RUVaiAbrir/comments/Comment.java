@@ -1,5 +1,6 @@
 package ml.darklyn.RUVaiAbrir.comments;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 import javax.persistence.Entity;
@@ -25,8 +26,10 @@ import ml.darklyn.RUVaiAbrir.user.User;
 
 @Table(name = "tb_comment")
 @Entity
-public class Comment {
+public class Comment implements Serializable {
 	
+	private static final long serialVersionUID = -3340773250838001184L;
+
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;

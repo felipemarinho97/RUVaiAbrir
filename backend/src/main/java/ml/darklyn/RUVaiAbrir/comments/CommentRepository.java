@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import ml.darklyn.RUVaiAbrir.enumeration.MealType;;
 
 @Repository
-public interface CommentReporitory extends CrudRepository<Comment, Long> {
+public interface CommentRepository extends CrudRepository<Comment, Long> {
 	
 	Optional<Page<Comment>> findByDateAndMealType(LocalDate date, MealType mealType, Pageable pageable);
 

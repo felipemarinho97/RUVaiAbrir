@@ -1,8 +1,8 @@
 package ml.darklyn.RUVaiAbrir.user;
 
+import java.io.Serializable;
 import java.util.Set;
 
-import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -24,8 +24,10 @@ import ml.darklyn.RUVaiAbrir.user.roles.Role;
 
 @Entity
 @Table(name = "tb_users")
-public class User {
+public class User implements Serializable {
 	
+	private static final long serialVersionUID = 2491756622911653043L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

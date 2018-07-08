@@ -5,6 +5,10 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -14,7 +18,6 @@ import ml.darklyn.RUVaiAbrir.enumeration.MealType;
 import ml.darklyn.RUVaiAbrir.enumeration.RestaurantStatus;
 import ml.darklyn.RUVaiAbrir.exceptions.NotFoundException;
 import ml.darklyn.RUVaiAbrir.exceptions.UnauthorizedException;
-import ml.darklyn.RUVaiAbrir.rating.Rating;
 import ml.darklyn.RUVaiAbrir.time.TimeService;
 import ml.darklyn.RUVaiAbrir.user.User;
 import ml.darklyn.RUVaiAbrir.user.UserRepository;
@@ -109,14 +112,21 @@ public class StatusService {
 				
 		return userStatusRepository.save(userStatus);
 	}
-
+	
+	@Cacheable(value = "user-status", key = "#id")
 	public UserStatus getUserStatusById(Long id) {
 		UserStatus userStatus = userStatusRepository.findById(id)
 				.orElseThrow(() -> new NotFoundException("Não foi encontrado nenhum status com o ID especificado."));
 		
 		return userStatus;
 	}
-
+	
+	@Caching(
+			put = {
+				@CachePut(value = "user-status", key = "#id") },
+			evict = {
+				@CacheEvict(value = "user-status-u-d-m")
+			})
 	public UserStatus updateUserStatus(Long id, StatusDTO statusDTO) {
 		UserStatus userStatus = userStatusRepository.findById(id)
 				.orElseThrow(() -> new NotFoundException("Não foi encontrado nenhum status com o ID especificado."));
@@ -126,6 +136,10 @@ public class StatusService {
 		return userStatusRepository.save(userStatus);
 	}
 
+	@Caching(evict = {
+			@CacheEvict(value = "user-status", key = "#id"),
+			@CacheEvict(value = "user-status-u-d-m")
+		})
 	public void removeUserStatus(Long id, String email) {
 		UserStatus userStatus = userStatusRepository.findById(id)
 				.orElseThrow(() -> new NotFoundException("Não foi encontrado nenhum status com o ID especificado."));
@@ -137,7 +151,8 @@ public class StatusService {
 		}
 
 	}
-
+	
+	@Cacheable("user-status-u-d-m")
 	public UserStatus getUserStatus(User user, LocalDate date, MealType mealType) {
 		return userStatusRepository.findOneByUserAndDateAndMealType(user, date, mealType)
 				.orElseThrow(() -> new NotFoundException("Não foi encontrado nenhuma Status para o Usuário especificado."));

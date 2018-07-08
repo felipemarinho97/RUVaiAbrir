@@ -1,16 +1,14 @@
 package ml.darklyn.RUVaiAbrir.dto;
 
-import java.util.Date;
+import java.io.Serializable;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 import ml.darklyn.RUVaiAbrir.enumeration.RestaurantStatus;
 
-public class StatusDTO {
+public class StatusDTO implements Serializable {
 	
 	@NotNull
 	@Enumerated(EnumType.STRING)

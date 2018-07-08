@@ -1,5 +1,6 @@
 package ml.darklyn.RUVaiAbrir.menu;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 import javax.persistence.Entity;
@@ -22,7 +23,7 @@ import ml.darklyn.RUVaiAbrir.enumeration.MealType;
 @Table(name="tb_dinner_menu", uniqueConstraints={
 	    @UniqueConstraint(columnNames = {"date", "mealType"})
 	})
-public class DinnerMenu {
+public class DinnerMenu implements Serializable {
 	
 	@JsonIgnore
 	@Id
