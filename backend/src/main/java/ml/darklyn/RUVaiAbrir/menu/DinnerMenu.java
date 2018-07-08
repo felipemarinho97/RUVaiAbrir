@@ -19,7 +19,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import ml.darklyn.RUVaiAbrir.enumeration.MealType;
 
 @Entity
-@Table(name="tb_menu", uniqueConstraints={
+@Table(name="tb_dinner_menu", uniqueConstraints={
 	    @UniqueConstraint(columnNames = {"date", "mealType"})
 	})
 public class DinnerMenu {
