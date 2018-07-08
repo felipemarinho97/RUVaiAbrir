@@ -1,12 +1,12 @@
 package ml.darklyn.RUVaiAbrir.menu;
 
 import java.time.LocalDate;
-import java.util.function.Supplier;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import ml.darklyn.RUVaiAbrir.enumeration.MealType;
@@ -25,6 +25,7 @@ public class MenuService {
 	@Autowired
 	private TimeService timeService;
 
+	@CacheEvict("current-lunch-menu")
 	public LunchMenu addOrUpdateLunch(@Valid LunchMenu menu) {
 		LunchMenu myMenu = lunchMenuRepository.findOneByDateAndMealType(menu.getDate(), menu.getMealType()).get();
 		
@@ -34,7 +35,8 @@ public class MenuService {
 		
 		return lunchMenuRepository.save(menu);
 	}
-
+	
+	@CacheEvict("current-dinner-menu")
 	public DinnerMenu addOrUpdateDinner(DinnerMenu menu) {
 		DinnerMenu myMenu = dinnerMenuRepository.findOneByDateAndMealType(menu.getDate(), menu.getMealType()).get();
 		
@@ -45,6 +47,7 @@ public class MenuService {
 		return dinnerMenuRepository.save(menu);
 	}
 
+	@Cacheable("current-dinner-menu")
 	public DinnerMenu getCurrentDinnerMenu() {
 		LocalDate currentDate = timeService.getCurrentDate();
 		MealType currentMealType = timeService.getCurrentMealType();
@@ -53,7 +56,8 @@ public class MenuService {
 		
 		return dinnerMenu;
 	}
-
+	
+	@Cacheable("current-lunch-menu")
 	public LunchMenu getCurrentLunchMenu() {
 		LocalDate currentDate = timeService.getCurrentDate();
 		MealType currentMealType = timeService.getCurrentMealType();
