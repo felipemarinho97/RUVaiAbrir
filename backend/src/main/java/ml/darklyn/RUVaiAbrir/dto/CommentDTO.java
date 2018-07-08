@@ -40,7 +40,7 @@ public class CommentDTO implements Serializable {
 	@Transient
 	private UserStatus userStatus;
 	
-	
+	public CommentDTO()	{  }
 
 	public CommentDTO(Comment comment) {
 		this.id = comment.getId();
