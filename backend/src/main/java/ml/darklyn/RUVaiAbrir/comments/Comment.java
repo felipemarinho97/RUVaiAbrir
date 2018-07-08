@@ -20,6 +20,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import ml.darklyn.RUVaiAbrir.enumeration.MealType;
+import ml.darklyn.RUVaiAbrir.status.UserStatus;
 import ml.darklyn.RUVaiAbrir.user.User;
 
 @Table(name = "tb_comment")
@@ -47,6 +48,10 @@ public class Comment {
 	@JsonInclude(Include.NON_NULL)
 	@Transient
 	private Integer rating;
+
+	@JsonInclude(Include.NON_NULL)
+	@Transient
+	private UserStatus userStatus;
 	
 	public Comment() { }
 	
@@ -105,6 +110,14 @@ public class Comment {
 
 	public void setRating(Integer rating) {
 		this.rating = rating;
+	}
+
+	public UserStatus getUserStatus() {
+		return userStatus;
+	}
+
+	public void setUserStatus(UserStatus userStatus) {
+		this.userStatus = userStatus;
 	}
 
 }

@@ -14,6 +14,7 @@ import ml.darklyn.RUVaiAbrir.enumeration.MealType;
 import ml.darklyn.RUVaiAbrir.enumeration.RestaurantStatus;
 import ml.darklyn.RUVaiAbrir.exceptions.NotFoundException;
 import ml.darklyn.RUVaiAbrir.exceptions.UnauthorizedException;
+import ml.darklyn.RUVaiAbrir.rating.Rating;
 import ml.darklyn.RUVaiAbrir.time.TimeService;
 import ml.darklyn.RUVaiAbrir.user.User;
 import ml.darklyn.RUVaiAbrir.user.UserRepository;
@@ -135,6 +136,11 @@ public class StatusService {
 			throw new UnauthorizedException("Desculpe, você não tem autorização para acessar este recurso.");
 		}
 
+	}
+
+	public UserStatus getUserStatus(User user, LocalDate date, MealType mealType) {
+		return userStatusRepository.findOneByUserAndDateAndMealType(user, date, mealType)
+				.orElseThrow(() -> new NotFoundException("Não foi encontrado nenhuma Status para o Usuário especificado."));
 	}
 
 }

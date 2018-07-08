@@ -13,6 +13,7 @@ import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
+import ml.darklyn.RUVaiAbrir.comments.Comment;
 import ml.darklyn.RUVaiAbrir.enumeration.MealType;
 import ml.darklyn.RUVaiAbrir.status.UserStatus;
 import ml.darklyn.RUVaiAbrir.user.User;
@@ -39,6 +40,16 @@ public class CommentDTO {
 	
 	@Transient
 	private UserStatus userStatus;
+	
+	
+
+	public CommentDTO(Comment comment) {
+		this.id = comment.getId();
+		this.user = comment.getUser();
+		this.message = comment.getMessage();
+		this.date = comment.getDate();
+		this.mealType = comment.getMealType();
+	}
 
 	public Long getId() {
 		return id;
@@ -78,6 +89,22 @@ public class CommentDTO {
 
 	public void setRating(Integer rating) {
 		this.rating = rating;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public UserStatus getUserStatus() {
+		return userStatus;
+	}
+
+	public void setUserStatus(UserStatus userStatus) {
+		this.userStatus = userStatus;
 	}
 	
 	

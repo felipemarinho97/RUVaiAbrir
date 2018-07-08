@@ -10,6 +10,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import ml.darklyn.RUVaiAbrir.enumeration.MealType;
+import ml.darklyn.RUVaiAbrir.user.User;
 
 @Repository
 public interface UserStatusRepository extends CrudRepository<UserStatus, Long> {
@@ -17,6 +18,8 @@ public interface UserStatusRepository extends CrudRepository<UserStatus, Long> {
 	Optional<List<UserStatus>> findByDateAndMealType(LocalDate date, MealType mealType);
 	
 	Optional<Page<UserStatus>> findByDateAndMealType(LocalDate date, MealType mealType, Pageable pageable);
+
+	Optional<UserStatus> findOneByUserAndDateAndMealType(User user, LocalDate date, MealType mealType);
 
 
 }

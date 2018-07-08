@@ -21,6 +21,8 @@ import ml.darklyn.RUVaiAbrir.rating.RatingService;
 import ml.darklyn.RUVaiAbrir.time.TimeService;
 import ml.darklyn.RUVaiAbrir.user.User;
 import ml.darklyn.RUVaiAbrir.user.UserRepository;
+import ml.darklyn.RUVaiAbrir.util.AuthValidator;
+import ml.darklyn.RUVaiAbrir.util.Util;
 
 @Service
 public class CommentService {
@@ -36,6 +38,9 @@ public class CommentService {
 
 	@Autowired
 	private RatingService ratingService;
+	
+	@Autowired
+	private Util util;
 
 	public Page<Comment> getComments(LocalDate date, MealType mealType, Pageable pageable) {
 		Page<Comment> comments = commentRepository.findByDateAndMealType(date, mealType, pageable)
@@ -46,7 +51,7 @@ public class CommentService {
 	public Page<Comment> getComments(LocalDate date, MealType mealType, Pageable pageable, List<String> include) {
 		Page<Comment> comments = this.getComments(date, mealType, pageable);
 		
-		comments.getContent().forEach((comment) -> applyIncludeParams(include, comment));
+		comments.getContent().forEach((comment) -> util.applyIncludeParams(include, comment));
 		
 		return comments;
 	}
@@ -62,30 +67,9 @@ public class CommentService {
 	public Comment getComment(Long commentId, List<String> include) {
 		final Comment comment = this.getComment(commentId);
 		
-		applyIncludeParams(include, comment);
+		util.applyIncludeParams(include, comment);
 		
 		return comment;
-	}
-	
-	private void applyIncludeParams(List<String> include, final Comment comment) {
-		include.forEach((toInclude) -> {
-			switch (toInclude) {
-			case "classificacao":
-				applyRatingParam(comment);
-				break;
-			default:
-				throw new BadRequestException("O atributo '"+toInclude+"' passado para o parâmetro 'inc' é inválido.");
-			}
-		});
-	}
-
-	private void applyRatingParam(final Comment comment) {
-		try {
-			Rating rating = ratingService.getRating(comment.getUser(), comment.getDate(), comment.getMealType());
-			comment.setRating(rating.getRating());
-		} catch (Exception e) {
-			System.err.println(e.getMessage());
-		}
 	}
 
 	public Comment getComment(Long commentId) {
@@ -96,22 +80,18 @@ public class CommentService {
 	public void deleteComment(Long id, Long userId) {
 		Comment comment = getComment(id);
 		
-		validateCommentAuth(comment, userId);
+		AuthValidator.validate(comment, userId);
 		
 		commentRepository.deleteById(userId);
 	}
 
 	public Comment updateComment(Long id, CommentDTO commentDTO, Long userId) {
 		Comment comment = getComment(id);
-		validateCommentAuth(comment, userId);
+		
+		AuthValidator.validate(comment, userId);
+		
 		comment.setMessage(commentDTO.getMessage());
 		return commentRepository.save(comment);
-	}
-	
-	private void validateCommentAuth(Comment comment, Long userId) {
-		if (!comment.getUser().getId().equals(userId)) {
-			throw new UnauthorizedException("Você não tem autorização para modificar este recurso.");
-		}
 	}
 
 }
