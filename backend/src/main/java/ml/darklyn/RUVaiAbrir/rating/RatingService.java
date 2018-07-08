@@ -39,8 +39,9 @@ public class RatingService {
 		
 		return new RatingDTO(averageRatingByDateAndMealType);
 	}
+	
 
-	@CacheEvict(value = "general-rating", allEntries = true)
+	@CacheEvict(value = {"general-rating", "rating-u-d-m"}, allEntries = true)
 	public Rating createRating(@Valid RatingDTO ratingDTO, String username, String email) {
 		User user = userRepository.findByUsernameOrEmail(username, email)
 				.get();
@@ -64,7 +65,7 @@ public class RatingService {
 		put = {
 			@CachePut(value = "rating", key = "#id") },
 		evict = {
-			@CacheEvict(value = {"general-rating", "rating-u-d-m"})
+			@CacheEvict(value = {"general-rating", "rating-u-d-m"}, allEntries = true)
 		})
 	public Rating updateRating(Long id, RatingDTO updatedRating, Long userId) {
 		Rating rating = getRatingById(id);
@@ -78,7 +79,7 @@ public class RatingService {
 
 	@Caching(evict = {
 		@CacheEvict(value = "rating", key = "#id"),
-		@CacheEvict(value = {"general-rating", "rating-u-d-m"})
+		@CacheEvict(value = {"general-rating", "rating-u-d-m"}, allEntries = true)
 	})
 	public void deleteRating(Long id, Long userId) {
 		Rating rating = getRatingById(id);
@@ -88,7 +89,7 @@ public class RatingService {
 		ratingRepository.delete(rating);
 	}
 	
-	@Cacheable("rating-u-d-m")
+	@Cacheable(value = "rating-u-d-m", key = "{#user.getId(),#date,#mealType}")
 	public Rating getRating(User user, LocalDate date, MealType mealType) {
 		return ratingRepository.findByUserAndDateAndMealType(user, date, mealType)
 				.orElseThrow(() -> new NotFoundException("Não foi encontrado nenhuma classificação para o Usuário especificado."));

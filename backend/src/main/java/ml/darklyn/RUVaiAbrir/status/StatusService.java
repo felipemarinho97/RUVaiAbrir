@@ -125,7 +125,7 @@ public class StatusService {
 			put = {
 				@CachePut(value = "user-status", key = "#id") },
 			evict = {
-				@CacheEvict(value = "user-status-u-d-m")
+				@CacheEvict(value = "user-status-u-d-m", allEntries = true)
 			})
 	public UserStatus updateUserStatus(Long id, StatusDTO statusDTO) {
 		UserStatus userStatus = userStatusRepository.findById(id)
@@ -138,7 +138,7 @@ public class StatusService {
 
 	@Caching(evict = {
 			@CacheEvict(value = "user-status", key = "#id"),
-			@CacheEvict(value = "user-status-u-d-m")
+			@CacheEvict(value = "user-status-u-d-m", allEntries = true)
 		})
 	public void removeUserStatus(Long id, String email) {
 		UserStatus userStatus = userStatusRepository.findById(id)
@@ -152,7 +152,7 @@ public class StatusService {
 
 	}
 	
-	@Cacheable("user-status-u-d-m")
+	@Cacheable(value = "user-status-u-d-m", key = "{#user.id,#date,#mealType}")
 	public UserStatus getUserStatus(User user, LocalDate date, MealType mealType) {
 		return userStatusRepository.findOneByUserAndDateAndMealType(user, date, mealType)
 				.orElseThrow(() -> new NotFoundException("Não foi encontrado nenhuma Status para o Usuário especificado."));

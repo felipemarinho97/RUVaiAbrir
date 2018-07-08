@@ -3,6 +3,7 @@ package ml.darklyn.RUVaiAbrir.comments;
 import java.time.LocalDate;
 import java.util.List;
 
+import javax.annotation.Resource;
 import javax.validation.Valid;
 
 import org.hibernate.annotations.Cache;
@@ -22,7 +23,7 @@ import ml.darklyn.RUVaiAbrir.exceptions.NotFoundException;
 import ml.darklyn.RUVaiAbrir.user.User;
 import ml.darklyn.RUVaiAbrir.user.UserRepository;
 import ml.darklyn.RUVaiAbrir.util.AuthValidator;
-import ml.darklyn.RUVaiAbrir.util.Util;
+import ml.darklyn.RUVaiAbrir.util.EntityIncluder;
 
 @Service
 public class CommentService {
@@ -34,7 +35,10 @@ public class CommentService {
 	private UserRepository userRepository;
 	
 	@Autowired
-	private Util util;
+	private EntityIncluder util;
+	
+	@Resource
+	private CommentService self;
 	
 	@Cacheable("comments")
 	public Page<Comment> getComments(LocalDate date, MealType mealType, Pageable pageable) {
@@ -44,7 +48,7 @@ public class CommentService {
 	}
 	
 	public Page<Comment> getComments(LocalDate date, MealType mealType, Pageable pageable, List<String> include) {
-		Page<Comment> comments = this.getComments(date, mealType, pageable);
+		Page<Comment> comments = self.getComments(date, mealType, pageable);
 		
 		comments.getContent()
 				.forEach((comment) -> util.applyIncludeParams(include, comment));
@@ -84,7 +88,7 @@ public class CommentService {
 		
 		AuthValidator.validate(comment, userId);
 		
-		commentRepository.deleteById(userId);
+		commentRepository.deleteById(id);
 	}
 	
 	@Caching(evict = {
