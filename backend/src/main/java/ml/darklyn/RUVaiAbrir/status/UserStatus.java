@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
 import ml.darklyn.RUVaiAbrir.enumeration.MealType;
@@ -18,7 +19,9 @@ import ml.darklyn.RUVaiAbrir.enumeration.RestaurantStatus;
 import ml.darklyn.RUVaiAbrir.user.User;
 
 @Entity
-@Table(name="tb_user_status")
+@Table(name="tb_user_status", uniqueConstraints={
+	    @UniqueConstraint(columnNames = {"date", "mealType", "user_id"})
+	})
 public class UserStatus {
 	
 	@Id
