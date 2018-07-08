@@ -1,11 +1,13 @@
 package ml.darklyn.RUVaiAbrir.dto;
 
+import java.io.Serializable;
+
 import javax.validation.Valid;
 
 import ml.darklyn.RUVaiAbrir.menu.DinnerMenu;
 import ml.darklyn.RUVaiAbrir.menu.LunchMenu;
 
-public class MenuDTO {
+public class MenuDTO implements Serializable {
 	
 	@Valid
 	private LunchMenu lunchMenu;

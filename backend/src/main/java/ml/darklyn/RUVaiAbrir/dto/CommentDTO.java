@@ -1,11 +1,10 @@
 package ml.darklyn.RUVaiAbrir.dto;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -19,7 +18,7 @@ import ml.darklyn.RUVaiAbrir.status.UserStatus;
 import ml.darklyn.RUVaiAbrir.user.User;
 
 @JsonInclude(Include.NON_NULL)
-public class CommentDTO {
+public class CommentDTO implements Serializable {
 	
 	private Long id;
 	

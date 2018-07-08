@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -46,6 +47,7 @@ public class StatusService {
 		return statusRepository.save(status);
 	}
 
+	@Cacheable("get-current-status")
 	public Status getCurrentStatus() {
 		LocalDate date = timeService.getCurrentDate();
 		MealType mealType = timeService.getCurrentMealType();

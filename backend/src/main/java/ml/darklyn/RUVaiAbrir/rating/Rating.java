@@ -1,5 +1,6 @@
 package ml.darklyn.RUVaiAbrir.rating;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 import javax.persistence.Entity;
@@ -27,7 +28,7 @@ import ml.darklyn.RUVaiAbrir.user.User;
 	    		columnNames = {"date", "mealType", "user_id"})
 	})
 @Entity
-public class Rating {
+public class Rating implements Serializable {
 	
 	@JsonIgnore
 	@Id
