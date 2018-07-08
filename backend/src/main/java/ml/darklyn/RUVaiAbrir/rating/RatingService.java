@@ -1,8 +1,6 @@
 package ml.darklyn.RUVaiAbrir.rating;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -12,10 +10,10 @@ import org.springframework.stereotype.Service;
 import ml.darklyn.RUVaiAbrir.dto.RatingDTO;
 import ml.darklyn.RUVaiAbrir.enumeration.MealType;
 import ml.darklyn.RUVaiAbrir.exceptions.NotFoundException;
-import ml.darklyn.RUVaiAbrir.exceptions.UnauthorizedException;
 import ml.darklyn.RUVaiAbrir.time.TimeService;
 import ml.darklyn.RUVaiAbrir.user.User;
 import ml.darklyn.RUVaiAbrir.user.UserRepository;
+import ml.darklyn.RUVaiAbrir.util.AuthValidator;
 
 @Service
 public class RatingService {
@@ -61,7 +59,7 @@ public class RatingService {
 	public Rating updateRating(Long id, RatingDTO updatedRating, Long userId) {
 		Rating rating = getRatingById(id);
 		
-		validateRatingAuth(rating, userId);
+		AuthValidator.validate(rating, userId);
 		
 		rating.setRating(updatedRating.getRating());
 		
@@ -72,15 +70,9 @@ public class RatingService {
 	public void deleteRating(Long id, Long userId) {
 		Rating rating = getRatingById(id);
 		
-		validateRatingAuth(rating, userId);
+		AuthValidator.validate(rating, userId);
 		
 		ratingRepository.delete(rating);
-	}
-	
-	private void validateRatingAuth(Rating rating, Long userId) {
-		if (!rating.getUser().getId().equals(userId)) {
-			throw new UnauthorizedException("Você não tem autorização para modificar este recurso.");
-		}
 	}
 
 	public Rating getRating(User user, LocalDate date, MealType mealType) {
