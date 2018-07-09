@@ -1,18 +1,18 @@
 package ml.darklyn.RUVaiAbrir.time;
 
-import java.time.Clock;
-import java.time.Instant;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
-import javax.validation.constraints.NotNull;
-
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import ml.darklyn.RUVaiAbrir.enumeration.MealType;
 
+@Transactional(propagation = Propagation.SUPPORTS)
 @Service
 public class TimeService {
 	

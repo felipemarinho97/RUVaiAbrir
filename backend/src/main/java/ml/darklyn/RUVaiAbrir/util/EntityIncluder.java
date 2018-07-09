@@ -7,6 +7,8 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import ml.darklyn.RUVaiAbrir.enumeration.IncludeOptions;
 import ml.darklyn.RUVaiAbrir.enumeration.MealType;
@@ -17,6 +19,7 @@ import ml.darklyn.RUVaiAbrir.status.StatusService;
 import ml.darklyn.RUVaiAbrir.status.UserStatus;
 import ml.darklyn.RUVaiAbrir.user.User;
 
+@Transactional(propagation = Propagation.SUPPORTS)
 @Component
 public class EntityIncluder<T> {
 	

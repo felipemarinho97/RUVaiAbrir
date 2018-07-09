@@ -15,6 +15,8 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import ml.darklyn.RUVaiAbrir.dto.CommentDTO;
 import ml.darklyn.RUVaiAbrir.enumeration.MealType;
@@ -55,7 +57,9 @@ public class CommentService {
 		
 		return comments;
 	}
-
+	
+	@Transactional
+	@CacheEvict(value = "comments", allEntries = true)
 	public Comment createComment(@Valid CommentDTO commentDTO, Long userId) {
 		User user = userRepository.findById(userId).get();
 		Comment comment = new Comment(user, commentDTO.getMessage(), commentDTO.getDate(), 
@@ -65,7 +69,7 @@ public class CommentService {
 	}
 	
 	public Comment getComment(Long commentId, List<String> include) {
-		final Comment comment = this.getComment(commentId);
+		final Comment comment = self.getComment(commentId);
 		
 		util.applyIncludeParams(include, comment);
 		
@@ -74,30 +78,31 @@ public class CommentService {
 	
 	@Cacheable(value = "comment", key = "#commentId")
 	public Comment getComment(Long commentId) {
-		System.out.println("Not from cache");
 		return commentRepository.findById(commentId)
 				.orElseThrow(() -> new NotFoundException("Não foi encontrado nenhum comentário com o ID especificado."));
 	}
 	
+	@Transactional
 	@Caching(evict = {
 		@CacheEvict(value = "comment", key = "#id"),
 		@CacheEvict(value = "comments", allEntries = true)
 	})
 	public void deleteComment(Long id, Long userId) {
-		Comment comment = getComment(id);
+		Comment comment = self.getComment(id);
 		
 		AuthValidator.validate(comment, userId);
 		
 		commentRepository.deleteById(id);
 	}
 	
+	@Transactional
 	@Caching(evict = {
 		@CacheEvict(value = "comments", allEntries = true)	
 	}, put = {
 		@CachePut(value = "comment", key = "#id")			
 	})
 	public Comment updateComment(Long id, CommentDTO commentDTO, Long userId) {
-		Comment comment = getComment(id);
+		Comment comment = self.getComment(id);
 		
 		AuthValidator.validate(comment, userId);
 		

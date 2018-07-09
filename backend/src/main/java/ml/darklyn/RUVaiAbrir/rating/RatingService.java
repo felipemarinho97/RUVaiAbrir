@@ -10,6 +10,7 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import ml.darklyn.RUVaiAbrir.dto.RatingDTO;
 import ml.darklyn.RUVaiAbrir.enumeration.MealType;
@@ -31,6 +32,7 @@ public class RatingService {
 	@Autowired
 	private TimeService timeSevice;
 	
+	@Transactional(readOnly = true)
 	@Cacheable("general-rating")
 	public RatingDTO getGeneralRating() {
 		LocalDate currentDate = timeSevice.getCurrentDate();
@@ -40,7 +42,7 @@ public class RatingService {
 		return new RatingDTO(averageRatingByDateAndMealType);
 	}
 	
-
+	@Transactional
 	@CacheEvict(value = {"general-rating", "rating-u-d-m"}, allEntries = true)
 	public Rating createRating(@Valid RatingDTO ratingDTO, String username, String email) {
 		User user = userRepository.findByUsernameOrEmail(username, email)
@@ -61,6 +63,7 @@ public class RatingService {
 		return rating;
 	}
 	
+	@Transactional
 	@Caching(
 		put = {
 			@CachePut(value = "rating", key = "#id") },
@@ -76,7 +79,8 @@ public class RatingService {
 		
 		return ratingRepository.save(rating);
 	}
-
+	
+	@Transactional
 	@Caching(evict = {
 		@CacheEvict(value = "rating", key = "#id"),
 		@CacheEvict(value = {"general-rating", "rating-u-d-m"}, allEntries = true)

@@ -1,7 +1,5 @@
 package ml.darklyn.RUVaiAbrir.user;
 
-import java.util.function.Supplier;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class CustomUserDetailsService implements UserDetailsService {
 	
 	private static final String USERNAME_NOT_FOUND_MESSAGE = "O usuário requesitado não foi encontrado.";
+	
 	@Autowired
 	private UserRepository userRepository;
 

@@ -1,14 +1,15 @@
 package ml.darklyn.RUVaiAbrir.config;
 
 import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
-public class CacheConfig {
+@EnableTransactionManagement
+public class ApplicationConfig {
 	
 	@Bean
 	public CacheManager cacheManager(RedisConnectionFactory connectionFactory) {
@@ -16,5 +17,6 @@ public class CacheConfig {
 				.builder(connectionFactory)
 				.build();		
 	}
+	
 
 }
