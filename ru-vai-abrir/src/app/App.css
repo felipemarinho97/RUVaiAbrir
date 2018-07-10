@@ -1,0 +1,42 @@
+.App {
+  text-align: center;
+}
+
+.App-container {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100vw;
+  height: 100vh;
+}
+
+.App-logo {
+  height: 80px;
+}
+
+.App-header {
+  box-shadow: 0 2px 4px -1px rgba(0,0,0,.25);
+}
+
+.App-footer {
+  box-shadow: 0 -2px 0px -1px rgba(0, 0, 0, 0.06);
+}
+
+.App-title {
+  font-size: 1.5em;
+}
+
+.App-intro {
+  font-size: large;
+}
+
+@keyframes App-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.App-footer-copyright {
+  text-align: center;
+}
+
