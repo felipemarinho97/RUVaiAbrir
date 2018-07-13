@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Form, Input, Icon, Button, notification } from 'antd';
+import { Redirect } from 'react-router-dom';
 
 import Auth from '../core/auth/Auth';
 import './Login.css';
@@ -17,6 +18,8 @@ class Login extends Component {
 
     constructor(props) {
         super(props);
+        console.log(props);
+        
         this.state = {
             emailOrUsername: "",
             password: ""
@@ -31,6 +34,12 @@ class Login extends Component {
         Auth.login(this.state.emailOrUsername, this.state.password)
             .then((res) => {
                 localStorage.setItem(AUTH_TOKEN, res.data.accessToken);
+                try {
+                    this.props.checkLogin();
+                } catch (e) {
+                    console.log(e);
+                    
+                }
 
                 openNotification("success","Você está logado!");
             })
@@ -38,6 +47,7 @@ class Login extends Component {
                 if (error.response)
                     openNotification("warning","Algo inesperado ocorreu", error.response.data.message)
             })
+
 
                    
     }
@@ -51,6 +61,8 @@ class Login extends Component {
 
     render() {
         return (
+            this.props.loggedIn ? 
+            (<Redirect to="/"/>) : (
             <div className="login-container">
                 <h1>Entrar</h1>
                 <Form onSubmit={this.handleLogin}>
@@ -72,7 +84,7 @@ class Login extends Component {
                         <Button htmlType="submit"><Icon type="login" />Entrar</Button>
                     </Item>
                 </Form>
-            </div>
+            </div>)
         );
     }
 

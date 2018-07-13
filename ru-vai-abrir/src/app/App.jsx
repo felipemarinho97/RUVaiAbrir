@@ -1,19 +1,58 @@
 import React, { Component } from 'react';
 
-import { Layout, Icon, Menu } from 'antd';
-import { Link, Route } from 'react-router-dom';
+import { Layout, Icon, Menu, Button } from 'antd';
+import { Link, Route, Switch, Redirect } from 'react-router-dom';
 
 import logo from './food-icon-1.svg';
 import './App.css';
 import Login from '../login/Login';
 import Register from '../register/Register';
-import { APP_NAME } from '../common/constants';
+import { APP_NAME, AUTH_TOKEN } from '../common/constants';
 
 
 const { Header, Content, Footer } = Layout;
 const { Item } = Menu;
 
+const FadingRoute = ({ component: Component, ...rest }) => (
+  <Route {...rest} render={props => (
+    <Component {...props} />
+  )} />
+)
+
 class App extends Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      loggedIn: false
+    }
+
+    this.handleLogout = this.handleLogout.bind(this);
+
+  }
+
+  componentWillMount() {
+    this.checkLogin()
+  }
+
+  checkLogin() {
+    let token = localStorage.getItem(AUTH_TOKEN);
+    if (token && (token.match(/^.+\..+\..+$/))) {
+      this.setState({ loggedIn: true })
+    } else {
+      this.setState({ loggedIn: false })
+    }
+  }
+
+  handleLogout(event) {
+    event.preventDefault();
+    
+    this.setState({ loggedIn: false });
+    localStorage.removeItem(AUTH_TOKEN);
+
+    console.log("espedasd");
+    
+  }
   
   render() {
     return (
@@ -22,19 +61,32 @@ class App extends Component {
           <div className="App-logo">
             <img src={logo} alt="logo" /> <a className="App-logo-name">{APP_NAME}</a>
           </div>
-          <Menu mode="horizontal" style={{ lineHeight: '63px', float:'right', borderBottom:'none' }}>
+          { this.state.loggedIn ?
+          (<Menu mode="horizontal" style={{ lineHeight: '63px', float:'right', borderBottom:'none' }}>
+              <Item key="3">
+                <Link to="/" onClick={this.handleLogout}>Sair <Icon type="logout" /></Link>
+              </Item>
+          </Menu>) :
+          (<Menu mode="horizontal" style={{ lineHeight: '63px', float: 'right', borderBottom: 'none' }}>
+
             <Item key="1">
               <Link to="/signin">Entrar <Icon type="login" /></Link>
             </Item>
             <Item key="2">
               <Link to="/signup">Registrar</Link>
             </Item>
-          </Menu>
+          </Menu>)
+          }
         </Header>
         <Content>
           <div className="container">
-            <Route path="/signin" component={Login} />
-            <Route path="/signup" component={Register} />
+            <Switch>
+              {/* this.state.loggedIn ?
+                (<Redirect to="/state" />)
+              : (<Route path="/" component={Welcome} />) */}
+              <Route path="/signin" component={(props) => (<Login checkLogin={() => this.checkLogin()} loggedIn={this.state.loggedIn}/>)} />
+              <Route path="/signup" component={(props) => (<Register loggedIn={this.state.loggedIn} />)} />
+            </Switch>
           </div>
         </Content>
         <Footer className="App-footer">
