@@ -7,6 +7,7 @@ import logo from './food-icon-1.svg';
 import './App.css';
 import Login from '../login/Login';
 import Register from '../register/Register';
+import Status from '../status/Status';
 import { APP_NAME, AUTH_TOKEN } from '../common/constants';
 
 
@@ -86,6 +87,7 @@ class App extends Component {
               : (<Route path="/" component={Welcome} />) */}
               <Route path="/signin" component={(props) => (<Login checkLogin={() => this.checkLogin()} loggedIn={this.state.loggedIn}/>)} />
               <Route path="/signup" component={(props) => (<Register loggedIn={this.state.loggedIn} />)} />
+              <Route path="/status" component={(props) => (<Status loggedIn={this.state.loggedIn} />)} />
             </Switch>
           </div>
         </Content>

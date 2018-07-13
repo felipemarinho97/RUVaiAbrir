@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import axios from 'axios';
-import { API_BASE_URL } from '../../common/constants';
+import { API_BASE_URL, AUTH_TOKEN } from '../../common/constants';
 
 class Auth extends Component {
 
@@ -10,6 +10,10 @@ class Auth extends Component {
 
     static register(firstName, lastName, email, username, password) {
         return axios.post(API_BASE_URL + '/auth/register', { firstName, lastName, email, username, password });
+    }
+
+    static getUserAuthToken() {
+        return localStorage.getItem(AUTH_TOKEN);
     }
     
 }
