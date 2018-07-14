@@ -4,6 +4,7 @@
     padding: 15px;
 }
 
-.tab-panel .Wrapper {
-    margin: auto
+.status-wrapper {
+    margin: auto;
+    padding-bottom: 1rem
 }

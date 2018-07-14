@@ -65,6 +65,9 @@ class App extends Component {
           { this.state.loggedIn ?
           (<Menu mode="horizontal" style={{ lineHeight: '63px', float:'right', borderBottom:'none' }}>
               <Item key="3">
+                <Link to="/status">Status</Link>
+              </Item>
+              <Item key="4">
                 <Link to="/" onClick={this.handleLogout}>Sair <Icon type="logout" /></Link>
               </Item>
           </Menu>) :
@@ -82,9 +85,6 @@ class App extends Component {
         <Content>
           <div className="container">
             <Switch>
-              {/* this.state.loggedIn ?
-                (<Redirect to="/state" />)
-              : (<Route path="/" component={Welcome} />) */}
               <Route path="/signin" component={(props) => (<Login checkLogin={() => this.checkLogin()} loggedIn={this.state.loggedIn}/>)} />
               <Route path="/signup" component={(props) => (<Register loggedIn={this.state.loggedIn} />)} />
               <Route path="/status" component={(props) => (<Status loggedIn={this.state.loggedIn} />)} />
@@ -94,7 +94,7 @@ class App extends Component {
         <Footer className="App-footer">
           <Icon type="ant-design" style={{float: 'right', fontSize: 20}}/>
           <div className="App-footer-copyright">
-            {APP_NAME} <Icon type="copyright" /> Desenvolvido com <Icon type="heart" style={{ fontSize:10 }} /> por Felipe Marinho
+            {APP_NAME} <Icon type="copyright" /> Desenvolvido com <Icon type="heart" style={{ fontSize: 10, color:"#f2371a" }} /> por Felipe Marinho
           </div>
         </Footer>
       </Layout>
