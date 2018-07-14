@@ -8,7 +8,7 @@ class API extends Component {
     static signedGetCall(endpoint, options) {
         const token = Auth.getUserAuthToken();
         if (!token)
-            return;
+            return new Promise((_, rej) => rej("O usuário deve estar logado para ter acesso ao sistema!"));
         let requestOptions = Object.assign({
             headers: {
                 Authorization: `Bearer ${token}`  
@@ -20,6 +20,10 @@ class API extends Component {
 
     static getCurrentStatus() {
         return this.signedGetCall('/status');
+    }
+
+    static getCurrentUserStatus() {
+        return this.signedGetCall('/usuario-status');
     }
 }
 

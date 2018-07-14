@@ -10,7 +10,7 @@ class Auth extends Component {
 
     static register(firstName, lastName, email, username, password) {
         return axios.post(API_BASE_URL + '/auth/register', { firstName, lastName, email, username, password });
-    }
+    } 
 
     static getUserAuthToken() {
         return localStorage.getItem(AUTH_TOKEN);
