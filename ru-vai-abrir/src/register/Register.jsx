@@ -135,7 +135,7 @@ class Register extends Component {
 
         return (
             this.props.loggedIn ? (
-                <Redirect to="/" />
+                <Redirect to="/status" />
             )
             : (<div className="register-container">
                 <h1>Registrar-se</h1>
