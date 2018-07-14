@@ -62,7 +62,7 @@ class Login extends Component {
     render() {
         return (
             this.props.loggedIn ? 
-            (<Redirect to="/"/>) : (
+            (<Redirect to="/status"/>) : (
             <div className="login-container">
                 <h1>Entrar</h1>
                 <Form onSubmit={this.handleLogin}>

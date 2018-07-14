@@ -70,7 +70,7 @@ class App extends Component {
           (<Menu mode="horizontal" style={{ lineHeight: '63px', float: 'right', borderBottom: 'none' }}>
 
             <Item key="1">
-              <Link to="/signin">Entrar <Icon type="login" /></Link>
+              <Link to="/signin">Entrar</Link>
             </Item>
             <Item key="2">
               <Link to="/signup">Registrar</Link>
@@ -81,9 +81,9 @@ class App extends Component {
         <Content>
           <div className="container">
             <Switch>
-              {/* this.state.loggedIn ?
-                (<Redirect to="/state" />)
-              : (<Route path="/" component={Welcome} />) */}
+              {/* {this.state.loggedIn ?
+                (<Redirect to="/status" />)
+              : (<div>Não logado</div>)} */}
               <Route path="/signin" component={(props) => (<Login checkLogin={() => this.checkLogin()} loggedIn={this.state.loggedIn}/>)} />
               <Route path="/signup" component={(props) => (<Register loggedIn={this.state.loggedIn} />)} />
             </Switch>
