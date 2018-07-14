@@ -37,6 +37,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
 	
 	@Autowired
 	private JwtAuthenticationEntryPoint unauthorizedHandler;
+	
+    private static final String[] SWAGGER_WHITELIST = {
+            "/swagger-resources/**",
+            "/swagger-ui.html",
+            "/v2/api-docs",
+            "/webjars/**"
+    };
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -51,6 +58,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
 			.authorizeRequests()
 				.antMatchers(HttpMethod.POST, "/auth/register").permitAll()
 				.antMatchers(HttpMethod.POST, "/auth/login").permitAll()
+				.antMatchers(SWAGGER_WHITELIST).permitAll()
 				.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 				.and()
 			.authorizeRequests()
