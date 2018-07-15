@@ -62,7 +62,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
 				.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 				.and()
 			.authorizeRequests()
-				.antMatchers(HttpMethod.PUT, "/status", "/cardapio").hasRole("FUNCIONARIO")
+				.antMatchers(HttpMethod.PUT, "/status", "/cardapio").hasRole("EMPLOYEE")
 				.and()
 			.authorizeRequests()
 				.antMatchers("/admin/**").hasRole("ADMIN")
