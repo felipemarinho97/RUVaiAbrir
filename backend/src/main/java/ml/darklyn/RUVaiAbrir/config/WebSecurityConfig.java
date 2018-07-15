@@ -110,7 +110,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
 	
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**").allowedOrigins(REACTJS_CLIENT_ORIGIN);
+        registry.addMapping("/**")
+		.allowedOrigins(REACTJS_CLIENT_ORIGIN)
+		.allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS");
     }
 	
 
