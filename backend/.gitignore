@@ -10,6 +10,11 @@
 .springBeans
 .sts4-cache
 
+### Eclipse ###
+/bin
+/transaction-logs
+dump.rdb
+
 ### IntelliJ IDEA ###
 .idea
 *.iws
