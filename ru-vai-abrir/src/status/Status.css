@@ -8,3 +8,24 @@
     margin: auto;
     padding-bottom: 1rem
 }
+
+.title {
+    font-weight: bolder;
+    font-size: 1em;
+    padding: 5px 0px;
+    display: inline-block;
+    margin-top: 0;
+    margin-bottom: 0.5em;
+    color: rgba(0, 0, 0, 0.85);
+}
+
+.Rating-container {
+    text-align: center;
+}
+
+@media(min-width : 400px) {
+    .Rating-container {
+        text-align: center;
+        padding-right: 110px;
+    }
+}
