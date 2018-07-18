@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { Form, Input, Icon, Button } from 'antd';
+import { Form, Input, Icon, Button, notification } from 'antd';
 import { Redirect } from 'react-router-dom';
 
 import Auth from '../core/auth/Auth';
@@ -9,12 +9,18 @@ import './Register.css';
 
 const { Item } = Form;
 
+const openNotification = (type, message, description) => {
+    notification[type]({
+        message, description
+    });
+};
 
 class Register extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
+            registeredSuccessful: false,
             firstName: '', 
             lastName: '', 
             email: '', 
@@ -30,6 +36,14 @@ class Register extends Component {
                     help: 'Deve possuir de 8 à 20 caracteres alfanuméricos, podendo conter "_" ou "."'
                 },
                 password: {
+                    status: '',
+                    help: ''
+                },
+                password2: {
+                    status: '',
+                    help: ''
+                },
+                form: {
                     status: '',
                     help: ''
                 }
@@ -55,6 +69,24 @@ class Register extends Component {
                 password: {
                     status: 'error',
                     help: "A senha deve conter mais de 8 caracteres."
+                }})});
+        }
+
+    }
+
+    validatePassword2 (toValidate) {
+        let valid = toValidate === this.state.password;
+        if (valid) {
+            this.setState({ validation: Object.assign({}, this.state.validation, {
+                password2: {
+                    status: 'success',
+                    help: ''
+                }})});
+        } else {
+            this.setState({ validation: Object.assign({}, this.state.validation, {
+                password2: {
+                    status: 'error',
+                    help: "As senhas devem coincidir."
                 }})});
         }
 
@@ -100,14 +132,50 @@ class Register extends Component {
         }
     }
 
+    validateForm() {
+        let types = ['email', 'username', 'password', 'password2'];
+        let valid = true;
+
+        types.forEach((type) => {
+            let status = this.state.validation[type].status;
+            if (status !== "" && status !== "success") {
+                this.setState({ validation: Object.assign({}, this.state.validation, {
+                    form: {
+                        status: 'error',
+                        help: "Por favor corrija os problemas encontrados."
+                    }})});
+                valid = false;
+            }
+        })
+
+        return valid;
+    }
+
     handleRegister(event) {
-        event.preventDefaults();
+        event.preventDefault();
+
+        if (!this.validateForm()) {           
+            return;
+        }       
 
         Auth.register(this.state.firstName, 
             this.state.lastName, this.state.email, this.state.username, this.state.password)
             .then(res => {
-                
+                openNotification("success", "Você está registrado!", "Agora é só fazer login e começar a usar o serviço.");
+                this.setState({ registeredSuccessful: true })
             })
+            .catch(err => {
+                console.log(err.response);
+                let title = "Ocorreu um erro inesperado";
+                let type = "error";
+
+                if (err.response.status === 400) {
+                    title = "Um ou mais campos estão incorretos.";
+                    type = "warning"
+                }
+                
+                openNotification(type, title, err.response.data.message);
+            });
     }
 
     handleChange(event) {
@@ -126,12 +194,17 @@ class Register extends Component {
             case "password":
                 this.validatePassword(target.value);
                 break;
+            case "password-2":
+                return this.validatePassword2(target.value);
         }
 
         this.setState({ [name]: event.target.value });
     }
 
-    render() {        
+    render() {
+        if (this.state.registeredSuccessful) {
+            return (<Redirect to="/signin" />)
+        }   
 
         return (
             this.props.loggedIn ? (
@@ -178,15 +251,16 @@ class Register extends Component {
                             prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} 
                             type="password" placeholder="Mais de 8 caracteres" />
                     </Item>
-                    <Item validateStatus={this.state.validation.password.status} hasFeedback
-                        help={this.state.validation.password.help} label="Confirmação da Senha">
+                    <Item validateStatus={this.state.validation.password2.status} hasFeedback
+                        help={this.state.validation.password2.help} label="Confirmação da Senha">
                         <Input
-                            size="large" name="password"
+                            size="large" name="password-2"
                             onChange={this.handleChange}
                             prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
                             type="password" placeholder="Re-escreva sua senha" />
                     </Item>
-                    <Item>
+                    <Item validateStatus={this.state.validation.form.status} 
+                        help={this.state.validation.form.help}>
                         <Button htmlType="submit" size="large">Registrar-se</Button>
                     </Item>
                 </Form>

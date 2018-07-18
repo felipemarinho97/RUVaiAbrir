@@ -74,7 +74,7 @@ class App extends Component {
           (<Menu mode="horizontal" style={{ lineHeight: '63px', float: 'right', borderBottom: 'none' }}>
 
             <Item key="1">
-              <Link to="/signin">Entrar <Icon type="login" /></Link>
+              <Link to="/signin">Entrar</Link>
             </Item>
             <Item key="2">
               <Link to="/signup">Registrar</Link>

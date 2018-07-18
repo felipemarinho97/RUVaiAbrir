@@ -37,6 +37,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
 	
 	@Autowired
 	private JwtAuthenticationEntryPoint unauthorizedHandler;
+	
+    private static final String[] SWAGGER_WHITELIST = {
+            "/swagger-resources/**",
+            "/swagger-ui.html",
+            "/v2/api-docs",
+            "/webjars/**"
+    };
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -51,10 +58,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
 			.authorizeRequests()
 				.antMatchers(HttpMethod.POST, "/auth/register").permitAll()
 				.antMatchers(HttpMethod.POST, "/auth/login").permitAll()
+				.antMatchers(SWAGGER_WHITELIST).permitAll()
 				.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 				.and()
 			.authorizeRequests()
-				.antMatchers(HttpMethod.PUT, "/status", "/cardapio").hasRole("FUNCIONARIO")
+				.antMatchers(HttpMethod.PUT, "/status", "/cardapio").hasRole("EMPLOYEE")
 				.and()
 			.authorizeRequests()
 				.antMatchers("/admin/**").hasRole("ADMIN")
@@ -102,7 +110,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
 	
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**").allowedOrigins(REACTJS_CLIENT_ORIGIN);
+        registry.addMapping("/**")
+		.allowedOrigins(REACTJS_CLIENT_ORIGIN)
+		.allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS");
     }
 	
 
