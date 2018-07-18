@@ -60,9 +60,10 @@ class Login extends Component {
     }
 
     render() {
+        if (this.props.loggedIn)
+            return (<Redirect to="/status" />)
+
         return (
-            this.props.loggedIn ? 
-            (<Redirect to="/status"/>) : (
             <div className="login-container">
                 <h1>Entrar</h1>
                 <Form onSubmit={this.handleLogin}>
@@ -84,7 +85,7 @@ class Login extends Component {
                         <Button htmlType="submit"><Icon type="login" />Entrar</Button>
                     </Item>
                 </Form>
-            </div>)
+            </div>
         );
     }
 
