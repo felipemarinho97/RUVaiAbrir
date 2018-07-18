@@ -1,0 +1,60 @@
+.container {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.App-container {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100vw;
+  height: 100vh;
+}
+
+.App-logo {
+  float: left;
+}
+
+.App-logo img {
+  height: 50px;
+}
+
+.App-logo-name {
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
+.App-header {
+  padding: 0% 10% 0% 10%;
+  box-shadow: 0 2px 4px -1px rgba(0,0,0,.25);
+}
+
+/* .ant-menu-horizontal {
+    border: 0;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    line-height: 46px;
+} */
+
+.App-footer {
+  box-shadow: 0 -2px 0px -1px rgba(0, 0, 0, 0.06);
+}
+
+.App-title {
+  font-size: 1.5em;
+}
+
+.App-intro {
+  font-size: large;
+}
+
+@keyframes App-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.App-footer-copyright {
+  text-align: center;
+}
+

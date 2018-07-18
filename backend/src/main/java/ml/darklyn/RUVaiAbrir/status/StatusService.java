@@ -12,6 +12,7 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import ml.darklyn.RUVaiAbrir.dto.StatusDTO;
 import ml.darklyn.RUVaiAbrir.enumeration.MealType;
@@ -36,7 +37,8 @@ public class StatusService {
 
 	@Autowired
 	private UserRepository userRepository;
-
+	
+	@Transactional
 	public Status addOrUpdateStatus(StatusDTO statusDTO) {
 		LocalDate date = timeService.getCurrentDate();
 		MealType mealType = timeService.getCurrentMealType();
@@ -101,7 +103,8 @@ public class StatusService {
 		
 		return averageStatus;
 	}
-
+	
+	@Transactional
 	public UserStatus createUserStatus(StatusDTO statusDTO, String email) {
 		LocalDate date = timeService.getCurrentDate();
 		MealType mealType = timeService.getCurrentMealType();
@@ -121,11 +124,12 @@ public class StatusService {
 		return userStatus;
 	}
 	
+	@Transactional
 	@Caching(
 			put = {
 				@CachePut(value = "user-status", key = "#id") },
 			evict = {
-				@CacheEvict(value = "user-status-u-d-m")
+				@CacheEvict(value = "user-status-u-d-m", allEntries = true)
 			})
 	public UserStatus updateUserStatus(Long id, StatusDTO statusDTO) {
 		UserStatus userStatus = userStatusRepository.findById(id)
@@ -135,10 +139,11 @@ public class StatusService {
 		
 		return userStatusRepository.save(userStatus);
 	}
-
+	
+	@Transactional
 	@Caching(evict = {
 			@CacheEvict(value = "user-status", key = "#id"),
-			@CacheEvict(value = "user-status-u-d-m")
+			@CacheEvict(value = "user-status-u-d-m", allEntries = true)
 		})
 	public void removeUserStatus(Long id, String email) {
 		UserStatus userStatus = userStatusRepository.findById(id)
@@ -152,7 +157,7 @@ public class StatusService {
 
 	}
 	
-	@Cacheable("user-status-u-d-m")
+	@Cacheable(value = "user-status-u-d-m", key = "{#user.id,#date,#mealType}")
 	public UserStatus getUserStatus(User user, LocalDate date, MealType mealType) {
 		return userStatusRepository.findOneByUserAndDateAndMealType(user, date, mealType)
 				.orElseThrow(() -> new NotFoundException("Não foi encontrado nenhuma Status para o Usuário especificado."));

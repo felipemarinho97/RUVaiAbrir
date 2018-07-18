@@ -10,6 +10,7 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import ml.darklyn.RUVaiAbrir.dto.RatingDTO;
 import ml.darklyn.RUVaiAbrir.enumeration.MealType;
@@ -31,6 +32,7 @@ public class RatingService {
 	@Autowired
 	private TimeService timeSevice;
 	
+	@Transactional(readOnly = true)
 	@Cacheable("general-rating")
 	public RatingDTO getGeneralRating() {
 		LocalDate currentDate = timeSevice.getCurrentDate();
@@ -39,8 +41,9 @@ public class RatingService {
 		
 		return new RatingDTO(averageRatingByDateAndMealType);
 	}
-
-	@CacheEvict(value = "general-rating", allEntries = true)
+	
+	@Transactional
+	@CacheEvict(value = {"general-rating", "rating-u-d-m"}, allEntries = true)
 	public Rating createRating(@Valid RatingDTO ratingDTO, String username, String email) {
 		User user = userRepository.findByUsernameOrEmail(username, email)
 				.get();
@@ -60,11 +63,12 @@ public class RatingService {
 		return rating;
 	}
 	
+	@Transactional
 	@Caching(
 		put = {
 			@CachePut(value = "rating", key = "#id") },
 		evict = {
-			@CacheEvict(value = {"general-rating", "rating-u-d-m"})
+			@CacheEvict(value = {"general-rating", "rating-u-d-m"}, allEntries = true)
 		})
 	public Rating updateRating(Long id, RatingDTO updatedRating, Long userId) {
 		Rating rating = getRatingById(id);
@@ -75,10 +79,11 @@ public class RatingService {
 		
 		return ratingRepository.save(rating);
 	}
-
+	
+	@Transactional
 	@Caching(evict = {
 		@CacheEvict(value = "rating", key = "#id"),
-		@CacheEvict(value = {"general-rating", "rating-u-d-m"})
+		@CacheEvict(value = {"general-rating", "rating-u-d-m"}, allEntries = true)
 	})
 	public void deleteRating(Long id, Long userId) {
 		Rating rating = getRatingById(id);
@@ -88,7 +93,7 @@ public class RatingService {
 		ratingRepository.delete(rating);
 	}
 	
-	@Cacheable("rating-u-d-m")
+	@Cacheable(value = "rating-u-d-m", key = "{#user.getId(),#date,#mealType}")
 	public Rating getRating(User user, LocalDate date, MealType mealType) {
 		return ratingRepository.findByUserAndDateAndMealType(user, date, mealType)
 				.orElseThrow(() -> new NotFoundException("Não foi encontrado nenhuma classificação para o Usuário especificado."));

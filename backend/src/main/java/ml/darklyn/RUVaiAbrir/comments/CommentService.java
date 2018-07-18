@@ -3,6 +3,7 @@ package ml.darklyn.RUVaiAbrir.comments;
 import java.time.LocalDate;
 import java.util.List;
 
+import javax.annotation.Resource;
 import javax.validation.Valid;
 
 import org.hibernate.annotations.Cache;
@@ -14,6 +15,8 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import ml.darklyn.RUVaiAbrir.dto.CommentDTO;
 import ml.darklyn.RUVaiAbrir.enumeration.MealType;
@@ -22,7 +25,7 @@ import ml.darklyn.RUVaiAbrir.exceptions.NotFoundException;
 import ml.darklyn.RUVaiAbrir.user.User;
 import ml.darklyn.RUVaiAbrir.user.UserRepository;
 import ml.darklyn.RUVaiAbrir.util.AuthValidator;
-import ml.darklyn.RUVaiAbrir.util.Util;
+import ml.darklyn.RUVaiAbrir.util.EntityIncluder;
 
 @Service
 public class CommentService {
@@ -34,7 +37,10 @@ public class CommentService {
 	private UserRepository userRepository;
 	
 	@Autowired
-	private Util util;
+	private EntityIncluder util;
+	
+	@Resource
+	private CommentService self;
 	
 	@Cacheable("comments")
 	public Page<Comment> getComments(LocalDate date, MealType mealType, Pageable pageable) {
@@ -44,14 +50,16 @@ public class CommentService {
 	}
 	
 	public Page<Comment> getComments(LocalDate date, MealType mealType, Pageable pageable, List<String> include) {
-		Page<Comment> comments = this.getComments(date, mealType, pageable);
+		Page<Comment> comments = self.getComments(date, mealType, pageable);
 		
 		comments.getContent()
 				.forEach((comment) -> util.applyIncludeParams(include, comment));
 		
 		return comments;
 	}
-
+	
+	@Transactional
+	@CacheEvict(value = "comments", allEntries = true)
 	public Comment createComment(@Valid CommentDTO commentDTO, Long userId) {
 		User user = userRepository.findById(userId).get();
 		Comment comment = new Comment(user, commentDTO.getMessage(), commentDTO.getDate(), 
@@ -61,7 +69,7 @@ public class CommentService {
 	}
 	
 	public Comment getComment(Long commentId, List<String> include) {
-		final Comment comment = this.getComment(commentId);
+		final Comment comment = self.getComment(commentId);
 		
 		util.applyIncludeParams(include, comment);
 		
@@ -70,30 +78,31 @@ public class CommentService {
 	
 	@Cacheable(value = "comment", key = "#commentId")
 	public Comment getComment(Long commentId) {
-		System.out.println("Not from cache");
 		return commentRepository.findById(commentId)
 				.orElseThrow(() -> new NotFoundException("Não foi encontrado nenhum comentário com o ID especificado."));
 	}
 	
+	@Transactional
 	@Caching(evict = {
 		@CacheEvict(value = "comment", key = "#id"),
 		@CacheEvict(value = "comments", allEntries = true)
 	})
 	public void deleteComment(Long id, Long userId) {
-		Comment comment = getComment(id);
+		Comment comment = self.getComment(id);
 		
 		AuthValidator.validate(comment, userId);
 		
-		commentRepository.deleteById(userId);
+		commentRepository.deleteById(id);
 	}
 	
+	@Transactional
 	@Caching(evict = {
 		@CacheEvict(value = "comments", allEntries = true)	
 	}, put = {
 		@CachePut(value = "comment", key = "#id")			
 	})
 	public Comment updateComment(Long id, CommentDTO commentDTO, Long userId) {
-		Comment comment = getComment(id);
+		Comment comment = self.getComment(id);
 		
 		AuthValidator.validate(comment, userId);
 		

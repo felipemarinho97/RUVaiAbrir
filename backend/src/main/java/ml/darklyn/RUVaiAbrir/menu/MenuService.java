@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import ml.darklyn.RUVaiAbrir.enumeration.MealType;
 import ml.darklyn.RUVaiAbrir.exceptions.NotFoundException;
@@ -24,7 +25,8 @@ public class MenuService {
 	
 	@Autowired
 	private TimeService timeService;
-
+	
+	@Transactional
 	@CacheEvict("current-lunch-menu")
 	public LunchMenu addOrUpdateLunch(@Valid LunchMenu menu) {
 		LunchMenu myMenu = lunchMenuRepository.findOneByDateAndMealType(menu.getDate(), menu.getMealType()).get();
@@ -36,6 +38,7 @@ public class MenuService {
 		return lunchMenuRepository.save(menu);
 	}
 	
+	@Transactional
 	@CacheEvict("current-dinner-menu")
 	public DinnerMenu addOrUpdateDinner(DinnerMenu menu) {
 		DinnerMenu myMenu = dinnerMenuRepository.findOneByDateAndMealType(menu.getDate(), menu.getMealType()).get();
