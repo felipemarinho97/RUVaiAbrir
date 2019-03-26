@@ -1,33 +1,34 @@
 .container {
     margin-left: auto;
     margin-right: auto;
+    min-width: 800px;
 }
 
 .App-container {
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  width: 100vw;
-  height: 100vh;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100vw;
+    height: 100vh;
 }
 
 .App-logo {
-  float: left;
+    float: left;
 }
 
 .App-logo img {
-  height: 50px;
+    height: 50px;
 }
 
 .App-logo-name {
-  padding-left: 6px;
-  padding-right: 6px;
+    padding-left: 6px;
+    padding-right: 6px;
 }
 
 .App-header {
-  padding: 0% 10% 0% 10%;
-  box-shadow: 0 2px 4px -1px rgba(0,0,0,.25);
+    padding: 0% 10% 0% 10%;
+    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.25);
 }
 
 /* .ant-menu-horizontal {
@@ -38,23 +39,27 @@
 } */
 
 .App-footer {
-  box-shadow: 0 -2px 0px -1px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 -2px 0px -1px rgba(0, 0, 0, 0.06);
+    margin-top: auto;
 }
 
 .App-title {
-  font-size: 1.5em;
+    font-size: 1.5em;
 }
 
 .App-intro {
-  font-size: large;
+    font-size: large;
 }
 
 @keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .App-footer-copyright {
-  text-align: center;
+    text-align: center;
 }
-

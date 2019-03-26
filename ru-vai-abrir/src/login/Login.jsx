@@ -8,21 +8,21 @@ import { AUTH_TOKEN } from '../common/constants';
 
 const { Item } = Form;
 
-const openNotification = (type, message, description) => {
+export const openNotification = (type, message, description) => {
     notification[type]({
-        message, description
+        message,
+        description,
     });
 };
 
 class Login extends Component {
-
     constructor(props) {
         super(props);
         console.log(props);
-        
+
         this.state = {
-            emailOrUsername: "",
-            password: ""
+            emailOrUsername: '',
+            password: '',
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -32,24 +32,24 @@ class Login extends Component {
     handleLogin(event) {
         event.preventDefault();
         Auth.login(this.state.emailOrUsername, this.state.password)
-            .then((res) => {
+            .then(res => {
                 localStorage.setItem(AUTH_TOKEN, res.data.accessToken);
                 try {
                     this.props.checkLogin();
                 } catch (e) {
                     console.log(e);
-                    
                 }
 
-                openNotification("success","Você está logado!");
+                openNotification('success', 'Você está logado!');
             })
-            .catch((error) => {
+            .catch(error => {
                 if (error.response)
-                    openNotification("warning","Algo inesperado ocorreu", error.response.data.message)
-            })
-
-
-                   
+                    openNotification(
+                        'warning',
+                        'Algo inesperado ocorreu',
+                        error.response.data.message
+                    );
+            });
     }
 
     handleChange(event) {
@@ -60,35 +60,53 @@ class Login extends Component {
     }
 
     render() {
-        if (this.props.loggedIn)
-            return (<Redirect to="/status" />)
+        if (this.props.loggedIn) return <Redirect to="/status" />;
 
         return (
             <div className="login-container">
                 <h1>Entrar</h1>
                 <Form onSubmit={this.handleLogin}>
                     <Item>
-                        <Input 
-                            size="large" name="emailOrUsername" value={this.state.emailOrUsername}
+                        <Input
+                            size="large"
+                            name="emailOrUsername"
+                            value={this.state.emailOrUsername}
                             onChange={this.handleChange}
-                            prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} 
-                            placeholder="Usuário ou Email" />
+                            prefix={
+                                <Icon
+                                    type="user"
+                                    style={{ color: 'rgba(0,0,0,.25)' }}
+                                />
+                            }
+                            placeholder="Usuário ou Email"
+                        />
                     </Item>
                     <Item>
-                        <Input 
-                            size="large" name="password" value={this.state.password}
+                        <Input
+                            size="large"
+                            name="password"
+                            value={this.state.password}
                             onChange={this.handleChange}
-                            prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} 
-                            type="password" placeholder="Senha" />
+                            prefix={
+                                <Icon
+                                    type="lock"
+                                    style={{ color: 'rgba(0,0,0,.25)' }}
+                                />
+                            }
+                            type="password"
+                            placeholder="Senha"
+                        />
                     </Item>
                     <Item>
-                        <Button htmlType="submit"><Icon type="login" />Entrar</Button>
+                        <Button htmlType="submit">
+                            <Icon type="login" />
+                            Entrar
+                        </Button>
                     </Item>
                 </Form>
             </div>
         );
     }
-
 }
 
 export default Login;
