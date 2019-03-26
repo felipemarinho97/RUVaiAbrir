@@ -74,7 +74,7 @@ public class StatusService {
 	public Status getCurrentUserStatus() {
 		LocalDate date = timeService.getCurrentDate();
 		MealType mealType = timeService.getCurrentMealType();
-		var averageStatus = new Status(date, RestaurantStatus.CLOSED, mealType);
+		Status averageStatus = new Status(date, RestaurantStatus.CLOSED, mealType);
 		
 		List<UserStatus> userStatusList = userStatusRepository.findByDateAndMealType(date, mealType)
 				.orElseThrow(() -> new NotFoundException("Não foi defindo nenhum status por usuários para o restaurante."));

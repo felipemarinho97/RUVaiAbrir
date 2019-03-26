@@ -57,7 +57,7 @@ public class CommentsController {
 		Sort sort = Sort.by(Direction.ASC, "date");
 		Pageable pageable = PageRequest.of(page, limit, sort);
 		LocalDate date = dateParam.orElse(timeService.getCurrentDate());
-		var mealType = mealTypeParam.orElse(timeService.getCurrentMealType());
+		MealType mealType = mealTypeParam.orElse(timeService.getCurrentMealType());
 		
 		Page<Comment> comments = includeOpt
 				.map((include) -> commentService.getComments(date, mealType, pageable, include))
