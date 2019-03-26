@@ -6,7 +6,8 @@
 
 .status-wrapper {
     margin: auto;
-    padding-bottom: 1rem
+    padding-bottom: 1rem;
+    display: inline-block;
 }
 
 .title {
@@ -23,7 +24,7 @@
     text-align: center;
 }
 
-@media(min-width : 400px) {
+@media (min-width: 400px) {
     .Rating-container {
         text-align: center;
         padding-right: 110px;
